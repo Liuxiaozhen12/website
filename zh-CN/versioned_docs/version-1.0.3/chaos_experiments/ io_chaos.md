@@ -1,180 +1,180 @@
 ---
-id: iochaos_experiment
+id: iochaos_expert
 title: IOChaos Experiment
 sidebar_label: IOChaos Experiment
 ---
 
-This document walks you through the IOChaos experiment.
+这个文档会让您穿越IOChaos实验。
 
-IOChaos allows you to simulate file system faults such as IO delay and read/write errors. It can inject delay and fault when your program is running IO system calls such as `open`, `read`, and `write`.
+IOChaos 允许您模拟文件系统错误，如IO 延迟和读/写错误。 当你的程序运行 IO 系统调用时，它可能会注入延迟和故障，如 `打开`， `读取`和 `写入`。
 
-## Configuration file
+## 配置文件
 
-Below is a sample YAML file of IOChaos:
+下面是IOChaos的 YAML 文件样本：
 
 ```yaml
-apiVersion: chaos-mesh.org/v1alpha1
+apiVersion: chaos-mesh。 rg/v1alpha1
 kind: IoChaos
-metadata:
-  name: io-delay-example
+metdata:
+  name: io-delayy-example
 spec:
-  action: latency
+  action: 延迟
   mode: one
   selector:
-    labelSelectors:
+    label Selector:
       app: etcd
   volumePath: /var/run/etcd
   path: '/var/run/etcd/**/*'
   delay: '100ms'
   percent: 50
-  duration: '400s'
+  dur: '400s'
   scheduler:
-    cron: '@every 10m'
+    cron: '@每 10m'
 ```
 
-For more sample files, see [examples](https://github.com/chaos-mesh/chaos-mesh/tree/master/examples). You can edit them as needed.
+欲了解更多样本文件，请参阅 [示例](https://github.com/chaos-mesh/chaos-mesh/tree/master/examples)。 您可以根据需要编辑它们。
 
 <!-- prettier-ignore -->
-| Field          | Description                                                                                                                                                                                                                                                        | Sample Value                                                                                   |
-|:-------------- |:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |:---------------------------------------------------------------------------------------------- |
-| **mode**       | Defines the mode of the selector.                                                                                                                                                                                                                                  | `one` / `all` / `fixed` / `fixed-percent` / `random-max-percent`                               |
-| **selector**   | Specifies the pods to be injected with IO chaos.                                                                                                                                                                                                                   |                                                                                                |
-| **action**     | Represents the IOChaos actions. Refer to [Available actions for IOChaos](#iavailable-actions-for-iochaos) for more details.                                                                                                                                        | `delay` / `fault` / `attrOverride`                                                             |
-| **volumePath** | The mount path of the target volume.                                                                                                                                                                                                                               | `"/var/run/etcd"`                                                                              |
-| **delay**      | Specifies the latency of the fault injection. The duration might be a string with a signed sequence of decimal numbers, each with an optional fraction and a unit suffix. Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", and "h".                      | `"300ms"` / `"2h45m"`                                                                          |
-| **errno**      | Defines the error code returned by an IO action. See [common Linux system errors](#common-linux-system-errors) for more Linux system error codes.                                                                                                                  | `2`                                                                                            |
-| **attr**       | Defines the attribute to be overridden and the corresponding value                                                                                                                                                                                                 | [examples](https://github.com/chaos-mesh/chaos-mesh/tree/master/examples/io-attr-example.yaml) |
-| **percent**    | Defines the probability of injecting errors in percentage.                                                                                                                                                                                                         | `100` (by default)                                                                             |
-| **path**       | Defines the path of files for injecting IOChaos actions. It should be a glob for the files which you want to inject fault or delay. It is base on [glob pattern](https://www.man7.org/linux/man-pages/man7/glob.7.html) and should be in the volumePath directory. | "/var/run/etcd/\*\*/\*"                                                                  |
-| **methods**    | Defines the IO methods for injecting IOChaos actions. It is represented as an array of string.                                                                                                                                                                     | `open` / `read` See the [available methods](#available-methods) for more details.              |
-| **duration**   | Represents the duration of a chaos action. The duration might be a string with the signed sequence of decimal numbers, each with an optional fraction and a unit suffix.                                                                                           | `"300ms"` / `"2h45m"`                                                                          |
-| **scheduler**  | Defines the scheduler rules for the running time of the chaos experiment.                                                                                                                                                                                          | see [robfig/cron](https://godoc.org/github.com/robfig/cron)                                    |
+| 字段       | 描述                                                                                                                                   | 示例值                                                                                       |
+|:-------- |:------------------------------------------------------------------------------------------------------------------------------------ |:----------------------------------------------------------------------------------------- |
+| **模式**   | 定义选择器的模式。                                                                                                                            | `一个` / `所有` / `已修复` / `固定百分比` / `随机最大百分比`                                                 |
+| **选择器**  | 指定IO chaos要注入的点数。                                                                                                                    |                                                                                           |
+| **行动**   | 代表IOChaos动作。 更多详情请参阅 [IOChaos](#iavailable-actions-for-iochaos) 可用的操作。                                                               | `延迟` / `故障` / `景点覆盖`                                                                      |
+| **音量路径** | 目标卷的挂载路径。                                                                                                                            | `"/var/run/etcd"`                                                                         |
+| **延迟**   | 指定故障注入的延迟。 持续时间可能是一个字符串，其符号顺序为十进制数字，每个字符串都有一个可选的分数和一个单位后缀。 有效时间单位为“ns”、“us”（或“微粒”）、“ms”、“s”、“m”和“h”。                                 | `"300毫秒"` / `"2h45m"`                                                                     |
+| **错误**   | 定义一个 IO 动作返回的错误代码。 查看 [常见的Linux系统错误](#common-linux-system-errors) 获取更多Linux系统错误代码。                                                   | `2`                                                                                       |
+| **attr** | 定义要覆盖的属性和相应的值                                                                                                                        | [示例：](https://github.com/chaos-mesh/chaos-mesh/tree/master/examples/io-attr-example.yaml) |
+| **百分比**  | 定义注射错误的概率百分比值。                                                                                                                       | `100` (默认值)                                                                               |
+| **路径**   | 定义注射IOChaos操作的文件路径。 它应该是你想要注入错误或延迟的文件的一个手机。 它是基于 [全球图案](https://www.man7.org/linux/man-pages/man7/glob.7.html) 的，应该在 volumePath 目录中。 | "/var/run/etcd/\*\*/\*"                                                             |
+| **方法**   | 定义IOChaos注射IOChaos操作的IO方法。 它是一个字符串数组表示的。                                                                                             | `打开` / `读取` 查看 [可用方法](#available-methods) 了解更多详情。                                         |
+| **持续时间** | 表示混乱动作的持续时间。 持续时间可能是一个字符串，其符号序列的十进制数字，每个字符串都有一个可选的分数和一个单位后缀。                                                                         | `"300毫秒"` / `"2h45m"`                                                                     |
+| **调度器**  | 定义故障实验运行时间的调度规则。                                                                                                                     | see [robfig/cron](https://godoc.org/github.com/robfig/cron)                               |
 
-## Usage
+## 用法
 
-Assume that you are using `examples/io-mixed-example.yaml`, you can run the following command to create a chaos experiment:
+假设您正在使用 `示例/io-mixedexample.yaml`，您可以运行以下命令来创建一个chaos实验：
 
 ```bash
-kubectl apply -f examples/io-mixed-example.yaml
+kubectl 应用 -f 示例/io-mixedexample.yaml
 ```
 
-## IOChaos available actions
+## IOChaos 可用的操作
 
-IOChaos currently supports the following actions:
+IOChaos目前支持以下行动：
 
-- **latency**: IO latency action. You can specify the latency before the IO operation returns a result.
-- **fault**: IO fault action. In this mode, IO operations returns an error.
-- **attrOverride**: Override attributes of a file.
+- **延迟**: IO 延迟操作。 您可以在IO 操作返回结果之前指定延迟。
+- **故障**: IO 故障操作。 在此模式下，IO 操作返回一个错误。
+- **吸引覆盖**: 覆盖文件的属性。
 
-### latency
+### 延迟
 
-If you are using the `latency` action, you can edit the specification as below:
+如果您正在使用 `延迟` 动作，您可以编辑下面的规格：
 
 ```yaml
-spec:
-  action: latency
-  delay: '1ms'
+示例：
+  操作：延迟
+  延迟：“1毫秒”
 ```
 
-It will inject a latency of 1ms into the selected methods.
+它会在选定的方法中注入1毫秒的延迟。
 
-### fault
+### 故障
 
-If you are using the `fault` action, you can edit the specification as below:
+如果您正在使用 `故障` 动作，您可以编辑下面的规格：
 
 ```yaml
-spec:
-  action: fault
-  errno: 32
+示例：
+  操作：故障
+  错误: 32
 ```
 
-The selected methods return error 32, which means `broken pipe`.
+选中的方法返回了32个错误，这意味着 `管道断了`。
 
-### attrOverride
+### 景点覆盖
 
-If you are using the `attrOverride` mode, you can edit the specification as below:
+如果您正在使用 `个景点覆盖` 模式，您可以编辑下面的规格：
 
 ```yaml
-spec:
-  action: attrOverride
-  attr:
-    perm: 72
+示例：
+  操作：吸引
+  景点：
+    权限：72
 ```
 
-Then the permission of selected files will be overridden with 110 in octal, which means the files cannot be read or modified (without CAP_DAC_OVERRIDE). See [available attributes](#available-attributes) for a list of all possible attributes to override.
+然后，所选文件的权限将被千分之八的110覆盖，这意味着文件无法读取或修改(没有 CAP_DAC_OVERRIDE)。 查看 [可用属性](#available-attributes) 以获取所有可能被覆盖的属性。
 
-> **Note**:
+> **注意**:
 > 
-> Attributes could be cached by Linux kernel, so it might have no effect if your program had accessed it before.
+> 此属性可以通过 Linux 内核缓存，所以如果您的程序以前曾经访问过它，它可能没什么作用。
 
-## Common Linux system errors
+## 常见的 Linux 系统错误
 
-Common Linux system errors are as below:
+常见的Linux系统错误如下：
 
-- `1`: Operation not permitted
-- `2`: No such file or directory
-- `5`: I/O error
-- `6`: No such device or address
-- `12`: Out of memory
-- `16`: Device or resource busy
-- `17`: File exists
-- `20`: Not a directory
-- `22`: Invalid argument
-- `24`: Too many open files
-- `28`: No space left on device
+- `1`: 操作不被允许
+- `2`: 没有这样的文件或目录
+- `5`: I/O 错误
+- `6`: 没有这样的设备或地址
+- `12`: 内存不足
+- `16`: 设备或资源繁忙的
+- `17`: 文件存在
+- `20`: 不是一个目录
+- `22`: 无效参数
+- `24`: 太多打开的文件
+- `28`: 设备上没有剩余空间
 
-Refer to [related header files](https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/asm-generic/errno-base.h) for more information.
+欲了解更多信息，请参阅 [相关的头文件](https://raw.githubusercontent.com/torvalds/linux/master/include/uapi/asm-generic/errno-base.h)。
 
-## Available methods
+## 可用的方法
 
-Available methods are as below:
+现有方法如下：
 
-- lookup
-- forget
+- 查找
+- 忘记了
 - getattr
 - setattr
-- readlink
+- 读取链接
 - mknod
 - mkdir
-- unlink
+- 取消链接
 - rmdir
 - symlink
-- rename
-- link
-- open
-- read
-- write
-- flush
-- release
+- 重命名：
+- 链接
+- 打开
+- 已读
+- 写
+- 刷入
+- 发布
 - fsync
 - opendir
-- readdir
-- releasedir
+- 增益者
+- releaseder
 - fsyncdir
-- statfs
+- 状态
 - setxattr
 - getxattr
 - listxattr
 - removexattr
-- access
-- create
+- 访问
+- 创建
 - getlk
 - setlk
 - bmap
 
-## Available attributes
+## 可用属性
 
-Available attributes and the meaning of them are listed here:
+可用属性及其含义在此列出：
 
-- `ino`, inode of a file
-- `size`, total size, in bytes
-- `blocks`, number of 512B blocks allocated
-- `atime`, time of last access
-- `mtime`, time of last modification
-- `ctime`, time of last status change
-- `kind`, file type. It can be `namedPipe`, `charDevice`, `blockDevice`, `directory`, `regularFile`, `symlink` or `socket`
-- `perm`, permission of a file
-- `nlink`, number of hard links
-- `uid`, user id of owner
-- `gid`, group id of owner
-- `rdev`, device ID (if special file)
+- `ino`, 文件的 inode
+- `大小`, 总大小, 单位为字节
+- `块`, 已分配的 512B 块数
+- `atime`, 最后一次访问的时间
+- `mtime`, 最后修改时间
+- `ctime`, 最后一次状态变化的时间
+- `类型`, 文件类型。 它可以是 `namedPipe`, `charDevel`, `blockD设备`, `目录`, `regular File`, `符号链接` 或 `套接字`
+- `perm`, 文件权限
+- `nlink`, 硬链接数量
+- `uid`, 所有者的用户id
+- `gid`, 所有者的组 id
+- `rdev`, 设备 ID (如果特殊文件)
