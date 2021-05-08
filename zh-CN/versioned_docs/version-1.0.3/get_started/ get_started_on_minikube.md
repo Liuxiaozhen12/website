@@ -1,77 +1,77 @@
 ---
 id: get_started_on_minikube
-title: Get started on Minikube
+title: 从Minikube开始
 ---
 
-import PickVersion from '@site/src/components/PickVersion'
+从 '@site/src/components/PickVersion' 导入选取版本
 
-This document describes how to deploy Chaos Mesh in Kubernetes on your laptop (Linux or macOS) using Minikube.
+本文档描述如何使用 Minikube 在 Kubernetes 上部署Chaos Mesh(Linux 或 macOS)
 
-## Prerequisites
+## 必备条件
 
-Before deployment, make sure [Minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/) is installed on your local machine.
+部署前，请确保 [Minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/) 安装在您的本地机器上。
 
-## Step 1: Set up the Kubernetes environment
+## 第 1 步：设置 Kubernetes 环境
 
-Perform the following steps to set up the local Kubernetes environment:
+执行以下步骤来建立当地的Kubernetes环境：
 
-1. Start a Kubernetes cluster:
+1. 启动一个Kubernetes集群：
 
    ```bash
    minikube start --kubernetes-version v1.15.0 --cpus 4 --memory "8192mb"
    ```
 
-   > **Note:**
+   > **注：**
    > 
-   > It is recommended to allocate enough RAM (more than 8192 MiB) to the Virtual Machine (VM) using the `--cpus` and `--memory` flag.
+   > 建议使用 `--cpus` 和 `--memory` 标记分配足够的 RAM (超过 8192 MIB) 到虚拟机 (VM)。
 
-2. Install helm:
+2. 安装头盔：
 
-   Following helm installation steps: https://helm.sh/docs/intro/install
+   按照头盔安装步骤: https://helm.sh/docs/intro/install
 
-## Step 2: Install Chaos Mesh
+## 步骤 2: 安装Chaos Mesh
 
 <PickVersion className="language-bash">
   curl -sSL https://mirrors.chaos-mesh.org/latest/install.sh | bash
 </PickVersion>
 
-The above command installs all the CRDs, required service account configuration, and all components. Before you start running a chaos experiment, verify if Chaos Mesh is installed correctly.
+上述命令将安装所有CRD，所需的服务账户配置以及所有组件。 在您开始运行混乱实验之前，请验证Chaos Mesh是否正确安装。
 
-You also can use [helm](https://helm.sh/) to [install Chaos Mesh manually](../user_guides/installation.md#install-by-helm).
+您也可以手动使用 [头盔](https://helm.sh/) 到 [安装 Chaos Mesh](../user_guides/installation.md#install-by-helm)。
 
-### Verify your installation
+### 验证您的安装
 
-Verify if Chaos Mesh is running
+验证Chaos Mesh 是否在运行
 
 ```bash
 kubectl get pod -n chaos-testing
 ```
 
-Expected output:
+预期输出：
 
 ```bash
-NAME                                        READY   STATUS    RESTARTS   AGE
-chaos-controller-manager-6d6d95cd94-kl8gs   1/1     Running   0          3m40s
-chaos-daemon-5shkv                          1/1     Running   0          3m40s
-chaos-dashboard-d998856f6-vgrjs             1/1     Running   0          3m40s
+命名重命名STATUS RESTARTS AGE
+chaos-controller-manager-6d6d95cd94kl8gs 1/1 Running 0 3m40s
+chaos-daemon-5shkv 1/1 Running 0 3m40s
+chaos-d98856f6-vgrjs 1/1 Running 0 3m40s
 ```
 
-## Run Chaos experiment
+## 运行Chaos测试
 
-Now that you have deployed Chaos Mesh in your environment, it's time to use it for your chaos experiments. Follow the steps in [Run chaos experiment](../user_guides/run_chaos_experiment.md) to run a Chaos experiment and then observe it on Chaos Mesh Dashboard.
+现在你已经在你的环境中部署了Chaos Mesh, 现在是时候用它来进行你的混乱实验了。 跟随 [运行混乱状态实验](../user_guides/run_chaos_experiment.md) 的步骤来运行一个Chaos实验，然后在Chaos Mesh 仪表板上观察它。
 
-## Uninstallation
+## 正在卸载
 
-You can uninstall Chaos Mesh by deleting the namespace.
+您可以通过删除命名空间卸载Chaos Mesh。
 
 <PickVersion className="language-bash">
-  curl -sSL https://mirrors.chaos-mesh.org/latest/install.sh | bash -s -- --template | kubectl delete -f -
+  curl -sSL https://mirrors.chaos-mesh.org/latest/install.sh | bash -s -- --template | kubectl delete -f
 </PickVersion>
 
-## Limitations
+## 限制
 
-There are some known restrictions for Chaos Operator deployed in the Minikube cluster:
+Minikube集群中部署的Chaos Operator已知的一些限制：
 
-- `netem chaos` is only supported for Minikube clusters >= version 1.6.
+- `Netem chaos` 只支持 Minikube 集群 >= 版本 1.6。
 
-In Minikube, the default virtual machine driver's image does not contain the `sch_netem` kernel module in earlier versions. You can use `none` driver (if your host is Linux with the `sch_netem` kernel module loaded) to try these chaos actions using Minikube or [build an image with sch_netem by yourself](https://minikube.sigs.k8s.io/docs/contrib/building/iso/).
+在 Minikube 中，默认虚拟机驱动器的图像不包含 `sch_netem` 内核模块。 您可以使用 `没有` 驱动程序(如果您的主机是 `sch_netem` 内核模块已加载) 来尝试使用Minikube 或 [用您自己的 sch_netem 构建一个图像](https://minikube.sigs.k8s.io/docs/contrib/building/iso/)
