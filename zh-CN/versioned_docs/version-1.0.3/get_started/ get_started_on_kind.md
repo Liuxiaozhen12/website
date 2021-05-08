@@ -1,63 +1,63 @@
 ---
-id: get_started_on_kind
-title: Get started on kind
+id: get_started_on_type
+title: 开始实物版
 ---
 
-import PickVersion from '@site/src/components/PickVersion'
+从 '@site/src/components/PickVersion' 导入选取版本
 
-This document describes how to deploy Chaos Mesh in Kubernetes on your laptop (Linux or macOS) using kind.
+本文档描述如何在您的膝上型电脑(Linux或macOS)上部署Chaos Mesh。
 
-## Prerequisites
+## 必备条件
 
-Before deployment, make sure [Docker](https://docs.docker.com/install/) is installed and running on your local machine.
+在部署前，请确保 [停靠](https://docs.docker.com/install/) 已经安装并在您的本地机器上运行。
 
 ## Install Chaos Mesh
 
 <PickVersion className="language-bash">
-  curl -sSL https://mirrors.chaos-mesh.org/latest/install.sh | bash -s -- --local kind
+  curl -sSL https://mirrors.chaos-mesh.org/latest/install.sh | bash - --local 类型
 </PickVersion>
 
-`install.sh` is an automation shell script that helps you install dependencies such as `kubectl`, `helm`, `kind`, and `kubernetes`, and deploy Chaos Mesh itself.
+`安装。 h` 是一个帮助您安装依赖关系的自动化shell脚本，如 `kubectl`, `头盔`, `类型`, 和 `kubernetes`, 并部署Chaos Mesh本身。
 
-After executing the above command, you need to verify if the Chaos Mesh is installed correctly.
+在执行上述命令后，您需要验证Chaos Mesh是否正确安装。
 
-You also can use [helm](https://helm.sh/) to [install Chaos Mesh manually](../user_guides/installation.md#install-by-helm).
+您也可以手动使用 [头盔](https://helm.sh/) 到 [安装 Chaos Mesh](../user_guides/installation.md#install-by-helm)。
 
-### Verify your installation
+### 验证您的安装
 
-Verify if Chaos Mesh is running
+验证Chaos Mesh 是否在运行
 
 ```bash
 kubectl get pod -n chaos-testing
 ```
 
-Expected output:
+预期输出：
 
 ```bash
-NAME                                        READY   STATUS    RESTARTS   AGE
-chaos-controller-manager-6d6d95cd94-kl8gs   1/1     Running   0          3m40s
-chaos-daemon-5shkv                          1/1     Running   0          3m40s
-chaos-dashboard-d998856f6-vgrjs             1/1     Running   0          3m40s
+命名重命名STATUS RESTARTS AGE
+chaos-controller-manager-6d6d95cd94kl8gs 1/1 Running 0 3m40s
+chaos-daemon-5shkv 1/1 Running 0 3m40s
+chaos-d98856f6-vgrjs 1/1 Running 0 3m40s
 ```
 
-## Run Chaos experiment
+## 运行Chaos测试
 
-Now that you have deployed Chaos Mesh in your environment, it's time to use it for your chaos experiments. Follow the steps in [Run chaos experiment](../user_guides/run_chaos_experiment.md) to run a Chaos experiment and then observe it on Chaos Mesh Dashboard.
+现在你已经在你的环境中部署了Chaos Mesh, 现在是时候用它来进行你的混乱实验了。 跟随 [运行混乱状态实验](../user_guides/run_chaos_experiment.md) 的步骤来运行一个Chaos实验，然后在Chaos Mesh 仪表板上观察它。
 
-## Uninstallation
+## 正在卸载
 
 <PickVersion className="language-bash">
-  curl -sSL https://mirrors.chaos-mesh.org/latest/install.sh | bash -s -- --template | kubectl delete -f -
+  curl -sSL https://mirrors.chaos-mesh.org/latest/install.sh | bash -s -- --template | kubectl delete -f
 </PickVersion>
 
-In addition, you also can uninstall Chaos Mesh by deleting the namespace directly.
+此外，您还可以直接删除命名空间来卸载Chaos Mesh。
 
 ```bash
-kubectl delete ns chaos-testing
+kubectl 删除 ns chaos-测试
 ```
 
-## Clean kind cluster
+## 清理数据组
 
 ```bash
-kind delete cluster --name=kind
+删除数据组 --name=type
 ```
