@@ -1,29 +1,29 @@
 ---
-id: kernelchaos_experiment
-title: KernelChaos Experiment
-sidebar_label: KernelChaos Experiment
+id: 内核chaos_expert
+title: KernelChaos 测试
+sidebar_label: KernelChaos 测试
 ---
 
-This document describes how to create KernelChaos experiments in Chaos Mesh.
+本文档描述了如何在 Chaos Mesh中创建 KernelChaos 实验。
 
-Although KernelChaos targets a certain pod, the performance of other pods are also impacted depending on the specific callchain and frequency. It is because all pods of the same host share the same kernel.
+虽然KernelChaos的目标是某个药水，但其他药水的性能也受到影响，这取决于具体的呼叫链和频率。 这是因为同一个主机的所有坑都共享同一个内核。
 
-> **Warning:**
+> **警告：**
 > 
-> This feature is disabled by default. Do not use it in production environment.
+> 此功能默认被禁用。 不在生产环境中使用它。
 
-## Prerequisites
+## 必备条件
 
-- Linux kernel: version >= 4.18
-- [CONFIG_BPF_KPROBE_OVERRIDE](https://cateee.net/lkddb/web-lkddb/BPF_KPROBE_OVERRIDE.html) enabled
+- Linux 内核：版本 >= 4.18
+- [CONFIG_BP_KPROBE_OVERRIDE](https://cateee.net/lkddb/web-lkddb/BPF_KPROBE_OVERRIDE.html) 已启用
 - `bpfki.create = true` in [values.yaml](https://github.com/chaos-mesh/chaos-mesh/blob/master/helm/chaos-mesh/values.yaml)
 
-## Configuration file
+## 配置文件
 
-Below is a sample KernelChaos configuration file:
+下面是 KernelChaos 配置文件样本：
 
 ```yaml
-apiVersion: chaos-mesh.org/v1alpha1
+apiVersion: chaos-mesh。 rg/v1alpha1
 kind: KernelChaos
 metadata:
   name: kernel-chaos-example
@@ -31,7 +31,7 @@ metadata:
 spec:
   mode: one
   selector:
-    namespaces:
+    namespace:
       - chaos-mount
   failKernRequest:
     callchain:
@@ -39,53 +39,53 @@ spec:
     failtype: 0
 ```
 
-For more sample files, see [examples](https://github.com/chaos-mesh/chaos-mesh/tree/master/examples). You can edit them as needed.
+欲了解更多样本文件，请参阅 [示例](https://github.com/chaos-mesh/chaos-mesh/tree/master/examples)。 您可以根据需要编辑它们。
 
-Description:
+描述：
 
-- **mode** defines the mode to select pods.
-- **selector** specifies the target pods for chaos injection. For more details, see [Define the Scope of Chaos Experiment](../user_guides/experiment_scope.md).
-- **failkernRequest** defines the specified injection mode (kmalloc, bio, etc.) with a call chain and an optional set of predicates. The fields are:
+- **模式** 定义了选择pods的模式。
+- **选择器** 指定了用于故障注入的目标点。 欲了解更多详情，请参阅 [定义Chaos 实验范围](../user_guides/experiment_scope.md)。
+- **故障内核请求** 定义了指定的注入模式 (kmalloc、bio等)，有一个通话链和一套可选的预测集。 字段为：
 
-  - **failtype** indicates what to fail, can be set to `0` / `1` / `2`.
+  - **故障输入** 表示要失败的内容，可以设置为 `0` / `1` / `2`。
 
-    - If `0`, indicates slab to fail (should_failslab)
-    - If `1`, indicates alloc_page to fail (should_fail_alloc_page)
-    - If `2`, indicates bio to fail (should_fail_bio)
+    - 如果 `0`, 指示板块失败 (should_failslab)
+    - 如果 `1`, 指示分配页面失败 (should_fail_alloc_page)
+    - 如果 `2`, 指示失败的 bio (should_fail_bio)
 
-    For more information, see [fault-injection](https://www.kernel.org/doc/html/latest/fault-injection/fault-injection.html) and [inject_example](http://github.com/iovisor/bcc/blob/master/tools/inject_example.txt).
+    欲了解更多信息，请参阅 [故障注入](https://www.kernel.org/doc/html/latest/fault-injection/fault-injection.html) and [注入示例](http://github.com/iovisor/bcc/blob/master/tools/inject_example.txt)。
 
-  - **callchain** indicates a special call chain, such as:
+  - **调用链** 表示一个特殊的调用链，例如：
 
     ```c
     ext4_mount
     -> mount_subtree
-       -> ...
+       ->...
           -> should_failslab
     ```
 
-    With an optional set of predicates and an optional set of parameters, which used with predicates. See [call chain and predicate examples](https://github.com/chaos-mesh/bpfki/tree/develop/examples) to learn more. If there is no special call chain, just keep `callchain` empty, which means it will fail at any call chain with slab alloc (eg: kmalloc).
+    有一套可选的预测和一套可选的参数，它们与预测一起使用。 查看 [通话链和前提示例](https://github.com/chaos-mesh/bpfki/tree/develop/examples) 了解更多信息。 如果没有特殊通话链，请保持 `通话链` 为空。 这意味着它在任何通话链中都会使用sabb alloc合金失败(例如，kmalloc)。
 
-    The challchain's type is an array of frames, the frame has three fields:
+    Schallchain的类型是一个框架数组，框架有三个字段：
 
-    - **funcname** can be find from kernel source or `/proc/kallsyms`, such as `ext4_mount`.
-    - **parameters** is used with predicate, for example, if you want to inject slab error in `d_alloc_parallel(struct dentry *parent, const struct qstr *name)` with a special name `bananas`, you need to set it to `struct dentry *parent, const struct qstr *name`otherwise omit it.
-    - **predicate** accesses the arguments of this frame, example with parameters's, you can set it to `STRNCMP(name->name, "bananas", 8)` to make inject only with it, or omit it to inject for all d_alloc_parallel call chain.
+    - **函数名称** 可以从内核源找到 `/proc/kallsyms`, 例如 `ext4_mount`。
+    - **参数** 被用于预测，例如，如果您想在 `d_alloc_parabel(struct dentry *parent, const struct qstr *name)` with a special name `bananas`, 您需要将其设置为 `结构密度*父母，const struct qstr *name`否则省略它。
+    - **前提** 访问此帧的参数，例如参数，您可以将其设置为 `STRNCMP(name->名称) "香蕉", 8"` 只注入它, 或省略它以注入所有 d_alloc_partial 通话链。
 
-  - **headers** indicates the appropriate kernel headers you need. Eg: "linux/mmzone.h", "linux/blkdev.h" and so on.
-  - **probability** indicates the fails with probability. If you want 1%, please set this field with `1`.
-  - **times** indicates the max times of fails.
+  - **头** 表示您需要的内核头部。 Eg: "linux/mmzone.h", "linux/blkdev.h" 等.
+  - **概率** 表示失败的概率。 如果您想要1%，请设置此字段为 `1`。
+  - **次** 表示失败的最大时间。
 
-- **duration** defines the duration for each chaos experiment. In the sample file above, the time chaos lasts for 10 seconds.
-- **scheduler** defines the scheduler rules for the running time of the chaos experiment. For more rule information, see [robfig/cron](https://godoc.org/github.com/robfig/cron)
+- **持续时间** 定义了每次混乱状态实验的持续时间。 在上面的样本文件中，时间混乱持续10秒。
+- **调度器** 定义了混乱状态实验运行时间的调度规则。 欲了解更多规则信息，请参阅 [robfig/cron](https://godoc.org/github.com/robfig/cron)
 
-## Usage
+## 用法
 
-KernelChaos's function is similar to [inject.py](https://github.com/iovisor/bcc/blob/master/tools/inject.py), which guarantees the appropriate erroneous return of the specified injection mode (kmalloc, bio, etc.) given a call chain and an optional set of predicates.
+KernelChaos的函数与 [注入.py](https://github.com/iovisor/bcc/blob/master/tools/inject.py)相似，它保证了特定注入模式(kmalloc、bio等)的适当返回错误。 给出一个调用链和可选的预测集。
 
-You can read [inject_example.txt](https://github.com/iovisor/bcc/blob/master/tools/inject_example.txt) to learn more.
+您可以读取 [注入示例.txt](https://github.com/iovisor/bcc/blob/master/tools/inject_example.txt) 了解更多信息。
 
-Below is a sample program:
+下面是一个样本程序：
 
 ```c
 #include <sys/mount.h>
@@ -94,38 +94,38 @@ Below is a sample program:
 #include <errno.h>
 #include <unistd.h>
 
-int main(void) {
+int main(void) v.
     int ret;
-    while (1) {
+    当(1) v.
         ret = mount("/dev/sdc", "/mnt", "ext4",
                 MS_MGC_VAL | MS_RDONLY | MS_NOSUID, "");
+        如果(ret < 0)
+            fprintf(stderr, "%s\n", streror(errno));
+        睡眠(1)；
+        ret = umount("/mnt")；
         if (ret < 0)
-            fprintf(stderr, "%s\n", strerror(errno));
-        sleep(1);
-        ret = umount("/mnt");
-        if (ret < 0)
-            fprintf(stderr, "%s\n", strerror(errno));
+            fprintf(stderr, "%s\n", streror(errno));
     }
 }
 ```
 
-During the injection, the output is similar to this:
+在注入过程中，输出与此相似：
 
 ```
-> Cannot allocate memory
-> Invalid argument
-> Cannot allocate memory
-> Invalid argument
-> Cannot allocate memory
-> Invalid argument
-> Cannot allocate memory
-> Invalid argument
-> Cannot allocate memory
-> Invalid argument
+> 无法分配内存
+> 无效的参数
+> 无法分配内存
+> 无效的参数
+> 无法分配内存
+> 无效的参数
+> 无法分配内存
+> 无效的参数
+> 无法分配内存
+> 无效的参数
 ```
 
-## Limitation
+## 限制
 
-Although we use container_id to limit fault injection, but some behaviors might trigger systemic behaviors. For example:
+虽然我们使用容器ID来限制故障注入，但是某些行为可能会触发系统行为。 例如：
 
-When `failtype` is `1`, it means that physical page allocation will fail. If the behavior is continuous in a very short time (eg: ``while (1) {memset(malloc(1M), '1', 1M)}`), the system's oom-killer will be awakened to release memory. So the container_id will lose limit to oom-killer.
+当 `故障类型` 是 `1`, 这意味着实际页面分配将失败。 如果行为在很短时间内是连续的(例如：``while (1) {memset(malloc(1M), '1', 1M)}`)，系统oom-killer将被唤醒以释放内存。 所以容器ID将会失去雾杀手的极限。
