@@ -1,7 +1,7 @@
 ---
-id: chaos_engineering
-title: Chaos Engineering
-sidebar_label: Chaos Engineering
+id: chaos_engineery
+title: Chaos工程
+sidebar_label: Chaos工程
 ---
 
-Chaos engineering is the discipline of experimenting on a software system in production in order to build confidence in the system's capability to withstand turbulent and unexpected conditions. More details refer to [Chaos Engineering](https://en.wikipedia.org/wiki/Chaos_engineering).
+Chaos工程是对软件系统进行生产试验的学科，以便建立对该系统承受动荡和意外状况能力的信心。 更多详情参考 [Chaos Engineering](https://en.wikipedia.org/wiki/Chaos_engineering)。
