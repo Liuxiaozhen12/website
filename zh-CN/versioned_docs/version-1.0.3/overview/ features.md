@@ -1,17 +1,17 @@
 ---
-id: features
-title: Features
-sidebar_label: Features
+id: 功能
+title: 功能
+sidebar_label: 功能
 ---
 
-## Easy to Use
+## 简单易用
 
-No special dependencies, Chaos Mesh can be easily deployed directly on Kubernetes clusters, including [Minikube](https://github.com/kubernetes/minikube) and [Kind](https://kind.sigs.k8s.io/docs/user/quick-start/).
+没有特殊依赖关系，Chaos Mesh 可以轻松地直接部署到 Kubernetes 集群，包括 [Minikube](https://github.com/kubernetes/minikube) and [Kind](https://kind.sigs.k8s.io/docs/user/quick-start/) 中。
 
-Require no modification to the deployment logic of the system under test (SUT) Easily orchestrate fault injection behaviors in chaos experiments Hide underlying implementation details so that users can focus on orchestrating the chaos experiments
+不需要修改测试系统的部署逻辑(SUT) 轻松地将故障注射行为移植到chaos实验中 隐藏基本实现细节，以便用户能够集中精力整理混乱试验。
 
-## Design for Kubernetes
+## Kubernetes设计
 
-Chaos Mesh uses [CustomResourceDefinitions](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) (CRD) to define chaos objects.
+Chaos Mesh 使用 [CustomResourceDefinition](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) (CRD) 定义chaos objects.
 
-In the Kubernetes realm, CRD is a mature solution for implementing custom resources, with abundant implementation cases and toolsets available. Using CRD makes Chaos Mesh naturally integrate with the Kubernetes ecosystem.
+在Kubernetes领域，CRD是一个成熟的解决方案来执行自定义资源，有大量的执行案例和工具集。 使用 CRD 使Chaos Mesh自然融入Kubernetes 生态系统。
