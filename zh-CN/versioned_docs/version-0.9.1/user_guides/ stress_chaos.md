@@ -1,90 +1,90 @@
 ---
-id: stresschaos_experiment
-title: StressChaos Experiment
-sidebar_label: StressChaos Experiment
+id: straos_experience
+title: 压力沙托斯实验
+sidebar_label: 压力沙托斯实验
 ---
 
-This document helps you create StressChaos experiments.
+本文档有助于您建立压力链实验。
 
-StressChaos can generate plenty of stresses over a collection of pods. The stressors is injected into the target pods via the `chaos-daemon` internally.
+压力链能够对收集的药水产生大量压力。 压力器通过内部 `chaos-daemon` 注入到目标pods。
 
-## Configuration
+## 配置
 
-A StressChaos shares common configurations like other chaos, such as how to select pods, how to specify periodic chaos. You can refer to other docs for details. It defines stressors in **either** of the following two ways:
+RestricsChaos像其他混乱一样具有共同的配置，如如何选择诗人，如何确定周期性的混乱。 您可以参考其他文档了解详情。 它在 **中定义了下面两个路径的** 个压力器：
 
-- `stressors`
+- `应力器`
 
-  `Stressors` defines a plenty of stressors supported to stress system components out. You can use one or more of them to make up various kinds of stresses. At least one of the stressors should be specified. The following is supported stressors for now:
+  `压力器` 定义了大量支撑压力系统部件的压力器。 你可以使用其中的一个或多个来弥补各种压力。 至少应指定其中一个应激反应器。 以下是当前支持的压力器：
 
-  1. `memory`
+  1. `内存`
 
-     A `memory` stressor will continuously stress virtual memory out.
+     `内存` 压力器将持续压低虚拟内存。
 
-     | Option    | Type    | Required | Description                                                                                                                                                                                          |
-     | --------- | ------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-     | `workers` | Integer | True     | Specifies concurrent stressing instance.                                                                                                                                                             |
-     | `size`    | String  | False    | Specifies memory size consumed per worker, default is the total available memory. One can also specify the size as _%_ of total available memory or in units of _B, KB/KiB, MB/MiB, GB/GiB, TB/TiB_. |
+     | 选项       | 类型  | 必填 | 描述                                                                                                                                          |
+     | -------- | --- | -- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+     | `B. 工 人` | 整数  | 真的 | 指定并行评分实例。                                                                                                                                   |
+     | `大小`     | 字符串 | 错误 | 指定每个工人消耗的内存大小，默认是可用内存总额。 One can also specify the size as _%_ of total available memory or in units of _B, KB/KiB, MB/MiB, GB/GiB, TB/TiB_. |
 
-  2. `cpu`
+  2. `奇普文`
 
-     A `cpu` stressor will continuously stress CPU out.
+     `cpu` 压力器将持续将 CPU 压出.
 
-     | Option    | Type    | Required | Description                                                                                                                |
-     | --------- | ------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
-     | `workers` | Integer | True     | Specifies concurrent stressing instance. Actually it specifies how many CPUs to stress when it's less than available CPUs. |
-     | `load`    | Integer | False    | Specifies percent loading per worker. 0 is effectively a sleep (no load) and 100 is full loading.                          |
+     | 选项       | 类型 | 必填 | 描述                                         |
+     | -------- | -- | -- | ------------------------------------------ |
+     | `B. 工 人` | 整数 | 真的 | 指定并行评分实例。 实际上它指定了在它少于可用的 CPU 时需要强调的CPU 数量。 |
+     | `负载`     | 整数 | 错误 | 指定每个工人加载百分比数。 0 实际上是一个睡眠(无负载)，100个正在满载.    |
 
-- `stressngStressors`
+- `压力压力计压器`
 
-  `StressngStressors` defines a plenty of stressors just like `Stressors` except that it's an experimental feature and more powerful.
+  `压力强度` 定义了大量的压力强度，就像 `压力强度` 只是试验性特征和更强大。
 
-  You can define stressors in `stress-ng` (see also `man stress-ng`) dialect.
+  您可以在 `stres-ng` 中定义压力器(另见 `manstres-ng`) 方言。
 
-  > **Note:**
+  > **注：**
   > 
-  > However, not all of the supported stressors are well tested. It might be retired in later releases. Therefore, it is recommended to use `Stressors` to define the stressors and use this only when you want more stressors unsupported by `Stressors`.
+  > 然而，并非所有受支持的压力都经过良好的测试。 它可能会在以后的版本中退出。 因此， 建议使用 `压力器` 来定义压力器，并且只有在您想要更多压力器得不到 `压力器支持时才使用压力器`
 
-  When both `StressngStressors` and `Stressors` are defined, `StressngStressors` wins.
+  如果同时界定了 `个压力调度器` and `压力调度器` 则 `压力调度器` 温度调度器。
 
-## Usage
+## 用法
 
-Below is an example YAML file of StressChaos which is set to burn 1 CPU for 30 seconds in every 2 minutes:
+下面是一个 YAML RestesChaos 示例文件，它将在每2分钟内燃烧一个 CPU 30秒：
 
 ```yaml
-apiVersion: chaos-mesh.org/v1alpha1
-kind: StressChaos
-metadata:
+apiVersion: chaos-mesh。 rg/v1alpha1
+kind: Restreschaos
+metdata:
   name: burn-cpu
   namespace: chaos-testing
 spec:
   mode: one
   selector:
-    namespaces:
+    namespace:
       - tidb-cluster-demo
-  stressors:
+  strators:
     cpu:
       workers: 1
-  duration: '30s'
+  dur: '30s'
   scheduler:
     cron: '@every 2m'
 ```
 
-1. Create a namespace for your application. For example, `tidb-cluster-demo`:
+1. 为您的应用程序创建一个命名空间。 例如， `tidb-cluster-demo`:
 
    ```bash
-   kubectl create ns tidb-cluster-demo
+   kubectl 创建 ns tidb-cluster-demo
    ```
 
-2. Create your pods in the target namespace:
+2. 在目标命名空间中创建您的pods：
 
    ```bash
-   kubectl apply -f *your-pods.yaml*
+   kubectl apply -f *your pods.yaml*
    ```
 
-3. Inject a StressChaos:
+3. 注入压力链：
 
    ```bash
-   kubectl apply -f *your-stress-chaos.yaml*
+   kubectl apply -f *your stress-chaos.yaml*
    ```
 
-Then, your pod's CPU will burn for 30 seconds.
+然后，你的Pod 的 CPU 将燃烧30秒。
