@@ -1,156 +1,157 @@
 ---
-id: networkchaos_experiment
-title: NetworkChaos Experiment
-sidebar_label: NetworkChaos Experiment
+id: networkchaos_experience
+title: NetworkChaos 测试
+sidebar_label: NetworkChaos 测试
 ---
 
-This document describes how to create NetworkChaos experiments in Chaos Mesh.
+本文档描述了如何在Chaos Mesh中创建NetworkChaos实验。
 
-NetworkChaos actions are divided into two categories:
+NetworkChaos行动分为两类：
 
-- **Network Partition** action separates pods into several independent subnets by blocking communication between them.
+- **网络分区** 动作通过阻止pods 之间的通信将pods 分割成几个独立的子网。
 
-- **Network Emulation (Netem) Chaos** actions cover regular network faults, such as network delay, duplication, loss, and corruption.
+- **网络仿真(Netem) Chaos** 动作涵盖网络的正常故障，如网络延迟、重复、丢失和腐败。
 
-## Network Partition Action
+## 网络分区动作
 
-Below is a sample network partition configuration file:
+下面是一个示例网络分区配置文件：
 
 ```yaml
-apiVersion: chaos-mesh.org/v1alpha1
-kind: NetworkChaos
+apiVersion: chaos-mesh。 rg/v1alpha1
+种: NetworkChaos
 metadata:
   name: network-partition-example
   namespace: chaos-testing
 spec:
-  action: partition
-  mode: one
+  action: 
+ action: 分区
+  模式: one
   selector:
-    labelSelectors:
-      'app.kubernetes.io/component': 'tikv'
+    label Selector:
+      'app. 伯尔尼。 o/component': 'tikv'
   direction: to
   target:
     selector:
       namespaces:
         - tidb-cluster-demo
-      labelSelectors:
-        'app.kubernetes.io/component': 'tikv'
-    mode: one
+      label Selector:
+        'app. 伯尔尼。 o/component: 'tikv'
+    模式: one
   duration: '10s'
   scheduler:
-    cron: '@every 15s'
+    cron: '@每 15'
 ```
 
-For more sample files, see [examples](https://github.com/chaos-mesh/chaos-mesh/tree/master/examples). You can edit them as needed.
+欲了解更多样本文件，请参阅 [示例](https://github.com/chaos-mesh/chaos-mesh/tree/master/examples)。 您可以根据需要编辑它们。
 
-Description:
+描述：
 
-- **action** defines the specific chaos action for the pod. In this case, it is network partition.
-- **mode** defines the mode to run chaos action.
-- **selector** specifies the target pods for chaos injection. For more details, see [Define the Scope of Chaos Experiment](experiment_scope.md).
-- **direction** specifies the partition direction. Supported directions are `from`, `to` and `both`.
-- **target** specifies the target for network partition.
-- **duration** defines the duration for each chaos experiment. In the sample file above, the network partition lasts for `10` seconds.
-- **scheduler** defines the scheduler rules for the running time of the chaos experiment. For more rule information, see [robfig/cron](https://godoc.org/github.com/robfig/cron).
+- **操作** 定义了针对pod的特定混乱动作。 在此情况下，它是网络分区。
+- **模式** 定义了运行混乱动作的模式。
+- **选择器** 指定了用于故障注入的目标点。 欲了解更多详情，请参阅 [定义Chaos 实验范围](experiment_scope.md)。
+- **方向** 指定了分区方向。 支持的方向是 `从`, `到` 和 `都是`
+- **目标** 指定网络分区的目标。
+- **持续时间** 定义了每次混乱状态实验的持续时间。 在上面的样本文件中，网络分区持续 `10` 秒。
+- **调度器** 定义了混乱状态实验运行时间的调度规则。 欲了解更多规则信息，请参阅 [robfig/cron](https://godoc.org/github.com/robfig/cron)。
 
-## Netem Chaos Actions
+## Netem Chaos 操作
 
-There are 4 cases for netem chaos actions, namely loss, delay, duplicate, and corrupt.
+有四起失踪案，即丢失、延误、重复和腐败行为。
 
-> **Note:**
+> **注：**
 > 
-> The detailed description of each field in the configuration template are consistent with that in [Network Partition](#network-partition-action).
+> 配置模板中每个字段的详细描述与 [网络分区](#network-partition-action) 中的描述一致。
 
-### Network Loss
+### 网络丢失
 
-A Network Loss action causes network packets to drop randomly. To add a Network Loss action, locate and edit the corresponding template in [/examples](https://github.com/chaos-mesh/chaos-mesh/blob/master/examples/network-loss-example.yaml).
+网络丢失动作导致网络数据包随机丢弃。 若要添加网络丢失动作，请在 [/examps](https://github.com/chaos-mesh/chaos-mesh/blob/master/examples/network-loss-example.yaml) 中定位并编辑相应的模板。
 
-In this case, two action specific attributes are required - loss and correlation.
-
-```yaml
-loss:
-  loss: '25'
-  correlation: '25'
-```
-
-**loss** defines the percentage of packet loss.
-
-NetworkChaos variation is not purely random, so to emulate that there is a correlation value as well.
-
-### Network Delay
-
-A Network Delay action causes delays in message sending. To add a Network Delay action, locate and edit the corresponding template in [/examples](https://github.com/chaos-mesh/chaos-mesh/blob/master/examples/network-delay-example.yaml).
-
-In this case, three action specific attributes are required - correlation, jitter, and latency.
+在这种情况下，需要两种特定动作属性——丢失和相关性。
 
 ```yaml
-delay:
-  latency: '90ms'
-  correlation: '25'
-  jitter: '90ms'
+损失：
+  损失：'25'
+  关联：'25'
 ```
 
-**latency** defines the delay time in sending packets.
+**丢失** 定义了丢包的百分比。
 
-**jitter** specifies the jitter of the delay time. Default is `0ms`. Jitter is also referred technically as packet delay variation.
+NetworkChaos变量并非纯属随机性，因此可以模拟也有相关值。
 
-**correlation** specifies the correlation of the jitter. Default is `0`.
+### 网络延迟
 
-In the above example, the network latency is 90ms ± 90ms with 25% correlation.
+网络延迟操作会导致消息发送延迟。 若要添加网络延迟动作，请在 [/examps](https://github.com/chaos-mesh/chaos-mesh/blob/master/examples/network-delay-example.yaml) 中定位和编辑相应的模板。
 
-For a better understaning of Jitter, Latency and Network Delay, you can read [this article](https://www.speedcheck.org/wiki/jitter/).
-
-### Network Duplicate
-
-A Network Duplicate action causes packet duplication. To add a Network Duplicate action, locate and edit the corresponding template in [/examples](https://github.com/chaos-mesh/chaos-mesh/blob/master/examples/network-duplicate-example.yaml).
-
-In this case, two attributes are required - correlation and duplicate.
+在这种情况下，需要三个特定的动作属性——相关性、干扰性和延迟性。
 
 ```yaml
-duplicate:
-  duplicate: '40'
+延迟:
+  延迟: '90毫秒'
   correlation: '25'
+  jitter: '90毫秒'
 ```
 
-**duplicate** indicates the percentage of packet duplication. In the above example, the duplication rate is 40%.
+**延迟** 定义了发送数据包的延迟时间。
 
-### Network Corrupt
+**Jitter** 指定了延迟时间的垃圾。 默认值是 `0ms`。 Jitter 在技术上也被称为数据包延迟变化。
 
-A Network Corrupt action causes packet corruption. To add a Network Corrupt action, locate and edit the corresponding template in [/examples](https://github.com/chaos-mesh/chaos-mesh/blob/master/examples/network-corrupt-example.yaml).
+**关联** 指定了喷射器的关联性。 默认值是 `0`。
 
-In this case, two action specific attributes are required - correlation and corrupt.
+在上述示例中，网络延迟为90毫安±90毫秒，25%的相关性。
+
+对于Jitter、延迟和网络延迟等更好的隐藏，您可以阅读 [这篇文章](https://www.speedcheck.org/wiki/jitter/)。
+
+### 网络重复
+
+网络重复操作导致数据包重复。 若要添加网络重复动作，请在 [/examps](https://github.com/chaos-mesh/chaos-mesh/blob/master/examples/network-duplicate-example.yaml) 中定位并编辑相应的模板。
+
+在这种情况下，需要两个属性――相关性和重复。
 
 ```yaml
-corrupt:
-  corrupt: '40'
-  correlation: '25'
+重复:
+  重复: '40'
+  相关: '25'
 ```
 
-**corrupt** specifies the percentage of packet corruption.
+**重复** 表示数据包重复的百分比。 在上述例子中，重复率是40%。
 
-## Network Bandwidth Action
+### 网络损坏
 
-Network Bandwidth Action is used to limit the network bandwidth. To add a Network Bandwidth Action, locate and edit the corresponding template in [/examples](https://github.com/chaos-mesh/chaos-mesh/blob/master/examples/network-bandwidth-example.yaml).
+网络腐败行为导致数据包损坏。 若要添加网络损坏行为，请在 [/示例](https://github.com/chaos-mesh/chaos-mesh/blob/master/examples/network-corrupt-example.yaml) 中定位和编辑相应的模板。
 
-> **Note:**
+在这种情况下，需要两个特定动作的属性——相关性和损坏。
+
+```yaml
+损坏:
+  损坏: '40'
+  关联: '25'
+```
+
+**已损坏** 指定数据包损坏的百分比。
+
+## 网络带宽动作
+
+网络带宽操作用于限制网络带宽。 若要添加网络带宽动作，请在 [/example](https://github.com/chaos-mesh/chaos-mesh/blob/master/examples/network-bandwidth-example.yaml) 中定位和编辑相应的模板。
+
+> **注：**
 > 
-> Minikube does not support this feature as `CONFIG_NET_SCH_TBF` is disabled in Minikube's image.
+> Minikube不支持此功能，因为 `Minikube的图像已禁用了 CONFIG_NET_SCH_TBF`。
 
-To inject Network Bandwidth fault, three action specific attributes are required - rate, buffer and limit.
+若要注入网络带宽错误，需要三个特定动作属性——速率、缓冲区和限制。
 
 ```yaml
-bandwidth:
-  rate: 10 kbps
-  buffer: 1000
-  limit: 100
+带宽：
+  速率：10 kbps
+  缓冲：1000
+  限制 ︰ 100
 ```
 
-**rate** allows "bps", "kbps", "mbps", "gbps", "tbps" unit. "bps" means bytes per second.
+**比率** 允许"bps", "kbps", "mbps", "gbps", "tbps". “bps”是指每秒字节。
 
-**limit** defines the number of bytes that can be queued waiting for tokens to become available.
+**限制** 定义可以等待令牌可用队列的字节数。
 
-**buffer** is the maximum amount of bytes that tokens can be available for instantaneously.
+**缓冲区** 是令牌可以即时使用的最大字节数。
 
-**peakrate** is the maximum depletion rate of the bucket.
+**峰值** 是桶的最大耗减率。
 
-**minburst** specifies the size of the peakrate bucket.
+**minburst** 指定了峰率桶的大小。
