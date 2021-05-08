@@ -1,15 +1,15 @@
 ---
-id: development_overview
-title: Development Guide
-sidebar_label: Development Overview
+id: 发展概况
+title: 开发指南
+sidebar_label: 开发概览
 ---
 
-This guide prepares you for the development of Chaos Mesh from scratch. Before you get started, it is recommended to get familiar with the project through the following materials:
+本指南为您从零开始开发Chaos Mesh作准备。 在你开始之前，建议通过以下材料熟悉该项目：
 
-- [README](https://github.com/chaos-mesh/chaos-mesh/blob/master/README.md)
-- [README (Dashboard)](https://github.com/chaos-mesh/chaos-mesh/blob/master/ui/README.md)
+- [重试](https://github.com/chaos-mesh/chaos-mesh/blob/master/README.md)
+- [README (控制面板)](https://github.com/chaos-mesh/chaos-mesh/blob/master/ui/README.md)
 
-The development flow starts from [Set up your development environment](setup_env.md). After this, you can choose any of the following procedures to contribute:
+开发流程始于 [设置您的开发环境](setup_env.md)。 在此之后，您可以选择以下任何程序来贡献：
 
-- [Develop a New Chaos Type](dev_hello_world.md)
-- [Add facilities to chaos daemon](add_chaos_daemon.md)
+- [开发新Chaos 类型](dev_hello_world.md)
+- [将设施添加到混乱守护进程](add_chaos_daemon.md)
