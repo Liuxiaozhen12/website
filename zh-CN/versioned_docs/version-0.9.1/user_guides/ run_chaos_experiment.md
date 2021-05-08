@@ -1,117 +1,117 @@
 ---
-id: run_chaos_experiment
-title: Run Chaos Experiment
+id: 运行chaos_expert
+title: 运行Chaos Experiment
 ---
 
-import PickVersion from '@site/src/components/PickVersion'
+从 '@site/src/components/PickVersion' 导入选取版本
 
-Now that you have deployed Chaos Mesh in your environment, it's time to use it for your chaos experiments. This document walks you through the process of running chaos experiments. It also describes the regular operations on chaos experiments.
+现在你已经在你的环境中部署了Chaos Mesh, 现在是时候用它来进行你的混乱实验了。 这个文档使您走过了运行混乱的实验过程。 报告还介绍了经常性的混乱试验行动。
 
-## Step 1: Deploy the target cluster
+## 第 1 步：部署目标组
 
-The first step is always to deploy a testing cluster. For illustration purposes, [web-show](https://github.com/chaos-mesh/web-show) is used as an example cluster because it allows us to directly observe the effect of network chaos. You can also deploy your own application for testing.
+第一步总是部署一个测试组。 为示例目的， [webshow](https://github.com/chaos-mesh/web-show) 被用作示例集群，因为它允许我们直接观察网络混乱的影响。 您也可以部署自己的测试应用程序。
 
 <PickVersion className="language-bash">
-  curl -sSL https://mirrors.chaos-mesh.org/latest/web-show/deploy.sh | sh
+  curl -SSL https://mirrors.chaos-mesh.org/latest/web-show/dep.sh | sh
 </PickVersion>
 
-After executing the above command, you can access [`http://localhost:8081`](http://localhost:8081) in the browser to check the web-show application.
+在执行上面的命令后，您可以在浏览器中访问 [`http://localhost:8081`](http://localhost:8081) 查看网页显示应用程序。
 
-> **Note:**
+> **注：**
 > 
-> If the web-show is deployed on the server, you need to use the host ip to access the application.
+> 如果在服务器上部署了网络节目，您需要使用主机IP访问应用程序。
 
-## Step 2: Define the experiment configuration file
+## 步骤 2: 定义实验配置文件
 
-The chaos experiment configuration is defined in a YAML file. You need to create your own experiment configuration file based on the available fields in the sample below:
+在YAML文件中定义了chaos实验配置。 您需要根据下面样本中可用的字段创建您自己的实验配置文件：
 
 <!-- prettier-ignore -->
 ```yaml
-apiVersion: chaos-mesh.org/v1alpha1
-kind: NetworkChaos
+apiVersion: chaos-mesh。 rg/v1alpha1
+种: NetworkChaos
 metadata:
-  name: web-show-network-delay
+  name: web-show-network延迟
 spec:
-  action: delay # the specific chaos action to inject
-  mode: one # the mode to run chaos action; supported modes are one/all/fixed/fixed-percent/random-max-percent
-  selector: # pods where to inject chaos actions
-    namespaces:
-      - default
-    labelSelectors:
-      "app": "web-show"  # the label of the pod for chaos injection
-  delay:
-    latency: "10ms"
-  duration: "30s" # duration for the injected chaos experiment
-  scheduler: # scheduler rules for the running time of the chaos experiments about pods.
-    cron: "@every 60s"
+  action: 延迟# 特定的chaos 操作注入
+  模式: 一个 # 运行chaos 操作的模式; 支持的模式是一次/全部/固定/固定/随机-最大百分比
+  选择器：# 播出混乱动作的地点的点数
+    命名空间：
+      - 默认
+    标签选择器：
+      "应用": "web-show" # 用于混乱的点的标签
+  延迟：
+    延迟: "10ms"
+  持续时间: "30" # 注入chaos 实验的持续时间
+  时间安排: # 关于马铃薯试验的运行时间的调度规则.
+    cron：“@每 60 ”
 ```
 
-## Step 3: Apply a chaos experiment
+## 第 3 步：应用一个chaos 测试
 
-Run the following commands to apply the experiment:
+运行以下命令来应用实验：
 
 ```bash
-# Make sure you are in the chaos-mesh/examples/web-show directory
+# 请确保您在chaos-mesh/examples/web-show 目录
 kubectl apply -f network-delay.yaml
 ```
 
-Then you can access [`http://localhost:8081`](http://localhost:8081) in the browser to check the result of the chaos experiment.
+然后您可以在浏览器中访问 [`http://localhost:8081`](http://localhost:8081) 来检查混乱实验的结果。
 
-![network-delay](/img/using-chaos-mesh-to-insert-delays-in-web-show.png)
+![网络延迟](/img/using-chaos-mesh-to-insert-delays-in-web-show.png)
 
-From the line graph, you can tell that there is a 10 ms network delay every 60 seconds. If you are intrigued and want to try out more chaos experiments with Chaos Mesh, check out [examples/web-show](https://github.com/pingcap/chaos-mesh/tree/master/examples/web-show).
+从线条图表，您可以每隔60秒就知道有10毫秒网络延迟。 如果您被触发并想尝试更多Chaos Mesh的混乱实验，请查看 [示例/web-show](https://github.com/pingcap/chaos-mesh/tree/master/examples/web-show)。
 
-## Regular operations on chaos experiments
+## 3. 混乱试验方面的定期行动
 
-In this section, you will learn some follow-up operations when the chaos experiment is running.
+在本节中，当混乱状态试验正在运行时，您将学习一些后续操作。
 
-### Update a chaos experiment
-
-```bash
-vim network-delay.yaml # modify network-delay.yaml to what you want
-kubectl apply -f network-delay.yaml
-```
-
-### Pause a chaos experiment
+### 更新一个Chaos expert
 
 ```bash
-kubectl annotate networkchaos web-show-network-delay experiment.chaos-mesh.org/pause=true
+vim network-delay.yaml # 修改 network-delay.yaml 到您想要的
+kubectl 应用 -f network-delay.yaml
 ```
 
-### Resume a chaos experiment
+### 暂停一个混乱测试
 
 ```bash
-kubectl annotate networkchaos web-show-network-delay experiment.chaos-mesh.org/pause-
+kubectl 注释 networkchaos web-show-modification experiment.chaos-mesh.org/pause=true
 ```
 
-### Delete a chaos experiment
+### 恢复一个混乱测试
 
 ```bash
-kubectl delete -f network-delay.yaml
+kubectl 注释 networkchaos web-show-modification experiment.chaos-mesh.org/pause-
 ```
 
-If you encounter a situation that the delete action is blocked, it means that there are some target pods fail to recover. You can check the log of Chaos Mesh or just feel free to file an [issue](https://github.com/pingcap/chaos-mesh/issues). In addition, you also can force delete the chaos experiment by the following command:
+### 删除一个混乱测试
 
 ```bash
-kubectl annotate networkchaos web-show-network-delay chaos-mesh.chaos-mesh.org/cleanFinalizer=forced
+kubectl 删除 -f network-delay.yaml
 ```
 
-### Watch your chaos experiments in Chaos Dashboard
+如果您遇到删除操作被阻止的情况，这意味着一些目标点无法恢复。 您可以检查Chaos Mesh的日志，或只是感觉可以随时提交一个 [问题](https://github.com/pingcap/chaos-mesh/issues)。 此外，您还可以通过以下命令强制删除混乱测试：
 
-Chaos Dashboard is a Web UI for managing, designing, monitoring Chaos Experiments. Stay tuned for more supports or join us in making it happen.
+```bash
+kubectl 批注网络chaos web-show-network-delays chaos-mesh.chaos-mesh.org/cleanFinalizer=forced
+```
 
-> **Note:**
+### 在 Chaos 仪表盘中观看您的chaos测试
+
+Chaos 仪表板是一个用于管理、设计、监测Chaos 实验的Web UI。 敬请给予更多的支持，或与我们一道促成这种支持。
+
+> **注：**
 > 
-> If Chaos Dashboard was not installed, upgrade Chaos Mesh by executing `helm upgrade chaos-mesh chaos-mesh/chaos-mesh --namespace=chaos-testing --set dashboard.create=true`.
+> 如果未安装Chaos 仪表板，通过执行 `helm 升级chaos-mesh chaos-mesh chaos-mesh/chaos-mesh --namespace=chaos-testing --set dashboard.create=true` 来升级Chaos Mesh。
 
-A typical way to access it is to use `kubectl port-forward`:
+访问它的典型方式是使用 `kubectl 端口-forward`:
 
 ```bash
-kubectl port-forward -n chaos-testing svc/chaos-dashboard 2333:2333
+kubectl port-forward - n chaos-testing svc/chaos-ashboard 2333:2333
 ```
 
-Then you can access [`http://localhost:2333`](http://localhost:2333) in the browser.
+然后您可以在浏览器中访问 [`http://localhost:2333`](http://localhost:2333)
 
-To get a quick look of Chaos Dashboard workflow, check out the following articles:
+若要快速查看Chaos 仪表板工作流程，请查看以下文章：
 
-- [Craig Morten: K8s Chaos Dive: Chaos-Mesh Part 1](https://dev.to/craigmorten/k8s-chaos-dive-2-chaos-mesh-part-1-2i96)
+- [Craig Morten： K8s Chaos Dive： Chaos-Mesh Part 1](https://dev.to/craigmorten/k8s-chaos-dive-2-chaos-mesh-part-1-2i96)
