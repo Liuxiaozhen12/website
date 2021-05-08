@@ -4,60 +4,60 @@ title: Sidecar ConfigMap
 sidebar_label: Sidecar ConfigMap
 ---
 
-This document guides you to define a specified sidecar ConfigMap for your application.
+此文档引导您为您的应用程序定义一个指定的边形配置图。
 
-## Why do we need a specified Sidecar ConfigMap?
+## 为什么我们需要指定的Sidecar配置地图？
 
-Chaos Mesh runs a [fuse-daemon](https://www.kernel.org/doc/Documentation/filesystems/fuse.txt) server in [sidecar container](https://www.magalix.com/blog/the-sidecar-pattern) for implementing file system IOChaos.
+Chaos Mesh 在 [sidecar 容器](https://www.magalix.com/blog/the-sidecar-pattern) 运行一个 [fuse-daemon](https://www.kernel.org/doc/Documentation/filesystems/fuse.txt) 服务器来实现文件系统 IOChaos。
 
-In sidecar container, fuse-daemon needs to mount the data directory of application by [fusermount](http://manpages.ubuntu.com/manpages/bionic/en/man1/fusermount.1.html) before the application starts.
+在sidecar容器中，fuse-daemon需要在应用程序启动前由 [fusermount](http://manpages.ubuntu.com/manpages/bionic/en/man1/fusermount.1.html) 挂载应用程序的数据目录。
 
-## How it works?
+## 它是如何运作的？
 
-Currently, Chaos Mesh supports two types of ConfigMaps:
+目前，Chaos Mesh 支持两种配置地图：
 
-1. Template config. The skeleton of each sidecar config is similar, in order to fulfill different requirements and make the configuration simplified, Chaos Mesh supports creating common templates to be used by different applications. For the details of template configuration, please refer to [template config](sidecar_template.md).
+1. 模板配置。 每个侧边栏配置的骨架相似，以便满足不同的要求并简化配置， Chaos Mesh 支持创建用于不同应用程序的常见模板。 关于模板配置的详情，请参阅 [模板配置](sidecar_template.md)。
 
-2. Injection config. This configuration will be combined with template config and finally generate a config to inject to the selected pods. Since most applications use different data directories, volume name or container name, you can define different parameters based on the common template created in the first step.
+2. 注入配置 此配置将与模板配置合并，最后生成一个配置以注入选定的pods。 由于大多数应用程序使用不同的数据目录，容量名称或容器名称 您可以根据在第一步创建的共同模板定义不同的参数。
 
-## Injection Configuration
+## 注入配置
 
-The following content is an injection ConfigMap defined for tikv:
+以下内容是为tikv定义的注入配置图：
 
 ```yaml
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: chaosfs-tikv
-  namespace: chaos-testing
-  labels:
-    app.kubernetes.io/component: webhook
-data:
+  nameosfs-tikv
+  namespace: chaos-teste
+  标签:
+    appp. 伯尔尼。 o/component: webhook
+data :
   chaosfs-tikv: |
     name: chaosfs-tikv
     selector:
-      labelSelectors:
-        "app.kubernetes.io/component": "tikv"
+      label Selector:
+        "app. 伯尔尼。 o/component: "tikv"
     template: chaosfs-sidecar
-    arguments:
+    参数:
       ContainerName: "tikv"
       DataPath: "/var/lib/tikv/data"
       MountPath: "/var/lib/tikv"
       VolumeName: "tikv"
 ```
 
-Injection config defines some injection arguments for different applications, and it is based on the common template created beforehand.
+注入配置定义了一些不同应用程序的注入参数，它基于之前创建的通用模板。
 
-For fields defined in this config, we have some brief descriptions below:
+对于此配置中定义的字段，我们有以下一些简短的描述：
 
-- **name**: injection config name, uniquely identifies a injection config in one namespace. However, you can have the same name in different namespaces so this is useful to implement multi-tenancy.
-- **selector**: is used to filter pods to inject sidecar.
-- **template**: the template config map name used to render the injection config. "chaosfs-sidecar" template is used for injecting fuse-server sidecar.
-- **arguments**: the arguments you should define to be used in the template.
+- **名称**: 注入配置名称，独特地在一个命名空间中识别注入配置。 然而，您可以在不同的命名空间中使用相同的名称，因此这对于实现多租户是有用的。
+- **选择器**: 用于过滤点到侧边。
+- **模板**: 用于渲染注入配置的模板配置名称。 “chaosfs-sidecar”模板用于注射fus-serversidecar。
+- **参数**: 您应该定义在模板中使用的参数。
 
-For more sample ConfigMap files, see [examples](https://github.com/chaos-mesh/chaos-mesh/tree/release-0.9/examples/chaosfs-configmap).
+欲了解更多示例配置地图文件，请参阅 [示例](https://github.com/chaos-mesh/chaos-mesh/tree/release-0.9/examples/chaosfs-configmap)。
 
-## Usage
+## 用法
 
-See [IOChaos Document](io_chaos.md).
+查看 [IOChaos 文档](io_chaos.md)。
