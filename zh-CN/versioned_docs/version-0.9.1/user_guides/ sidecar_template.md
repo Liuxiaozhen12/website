@@ -6,7 +6,7 @@ sidebar_label: Sidecar Template
 
 The following content is the common template ConfigMap defined for injecting IOChaos sidecar, you can also find this example [here](https://github.com/chaos-mesh/chaos-mesh/blob/release-0.9/manifests/chaosfs-sidecar.yaml):
 
-## Template ConfigMap
+## 模板配置地图
 
 ```yaml
 ---
@@ -60,37 +60,37 @@ data:
           - /tmp/scripts/wait-fuse.sh
 ```
 
-Template config defines some variables by [Go Template](https://golang.org/pkg/text/template/) mechanism. This example has four arguments:
+模板配置由 [转到模板](https://golang.org/pkg/text/template/) 机制定义了一些变量。 这个示例有四个参数：
 
-- DataPath: original data directory
-- MountPath: after injecting chaosfs sidecar, data directory will be mounted to {{.MountPath}}/fuse-data
-- VolumeName: the data volume name used by the pod
-- ContainerName: to which container the sidecar is injected
+- 数据路径：原始数据目录
+- 挂载路径：注入chaosfs sidecar之后，数据目录将被挂载到 {{.MountPath}}/fuse-data
+- 卷名称：诗人使用的数据卷名称
+- 容器名称：侧边栏注入到哪个容器
 
-For fields defined in this template, we have some brief descriptions below:
+对于此模板中定义的字段，我们有以下一些简短的描述：
 
-- **initContainers**: defines the [initContainer](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) need to be injected.
-- **container**: defines the sidecar container need to be injected.
-- **volumeMounts**: defines the new volumeMounts or overwrite the old volumeMounts of each containers in target pods.
-- **volume**: defines the new volumes for the target pod or overwrite the old volumes in target pods.
-- **postStart**: called after a container is created first. If the handler fails, the containers will failed.
+- **initContainers**: 定义 [initContainer](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/) 需要注入.
+- **容器**: 定义需要注入的侧ecar 容器。
+- **volumeMounts**: 定义新的volumeMounts 或覆盖目标坑中每个容器的旧卷Mounts
+- **音量**: 定义目标点的新量或覆盖目标点中的旧量。
+- **poststart**: 先创建一个容器后调用。 如果处理程序失败，容器将失败。
 
-> **Note:**
+> **注：**
 > 
-> Chaos controller-manager only watches template config map with the label selector specified by its flag `--template-labels`, by default this label is `app.kubernetes.io/component=template` if your Chaos Mesh is deployed by helm.
+> Chaos controller-manager only watches template config map with label selector 指定 `--template-labels`, 默认情况下，此标签 是 `应用。 ubernetes.io/component=template` 如果你的 Chaos Mesh 是由头盔部署的。
 > 
-> Each template config map should be deployed in the same namespace as Chaos Mesh, and it is identified by the name of the config map, which is `chaosfs-sidecar` in the above example.
+> 每个模板配置地图都应该部署在与Chaos Mesh相同的命名空间中。 并且它是通过配置地图的名称来识别的，在上述例子中，它是 `chaosfs-sidecar`。
 > 
-> The template config content should be in the `data` field. This means it is not possible to define two templates in one config map, you have to use two config maps like the example below.
+> 模板配置内容应该在 `数据` 字段中。 这意味着无法在一个配置映射中定义两个模板，您必须使用下面的示例这样的配置映射。
 
 ```yaml
 ---
 apiVersion: v1
 kind: ConfigMap
-metadata:
+metdate:
   name: chaosfs-sidecar0
-  labels:
-    app.kubernetes.io/component: template
+  标签:
+    app.kubernetes。 o/component: template
 data:
   data: |
     xxxx
@@ -98,34 +98,34 @@ data:
 ---
 apiVersion: v1
 kind: ConfigMap
-metadata:
+metdate:
   name: chaosfs-sidecar1
   labels:
-    app.kubernetes.io/component: template
-data:
-  data: |
+    app. ubernetes.io/component：模板
+数据：
+  数据：|
     xxxx
 ```
 
-### Containers
+### 容器
 
 #### `chaosfs`
 
-`chaosfs` container is designed as a sidecar container and [chaosfs](https://github.com/chaos-mesh/chaos-mesh/tree/master/cmd/chaosfs) process runs in this container.
+`chaosfs` 容器被设计为侧边容器。 [chaosfs](https://github.com/chaos-mesh/chaos-mesh/tree/master/cmd/chaosfs) 程序运行在此容器中。
 
-`chaosfs` uses [fuse libary](https://github.com/hanwen/go-fuse) and [fusermount](https://www.kernel.org/doc/Documentation/filesystems/fuse.txt) tool to implement a fuse-daemon service and mounts the application's data directory. `chaosfs` hijacks all the file system IO actions of the application, so it can be used to simulate various real-world IO faults.
+`chaosfs` 使用 [fuser libary](https://github.com/hanwen/go-fuse) 和 [fusermount](https://www.kernel.org/doc/Documentation/filesystems/fuse.txt) 工具来实现fuse-daemon 服务并挂载应用程序的数据目录。 `chaosfs` 劫持应用程序的所有文件系统IO 动作，因此它可以用于模拟各种真实世界IO 错误。
 
-The following configuration injects `chaosfs` container to the target pods and starts a `chaosfs` process in this container.
+以下配置会向目标点注入 `chaosfs` 容器，并在此容器中启动 `chaosfs` 流程。
 
-In addition, `chaosfs` container should be run as `privileged` and the [`mountPropagation`](https://kubernetes.io/docs/concepts/storage/volumes/#mount-propagation) field in `chaosfs` Container.volumeMounts should be set to `Bidirectional`.
+此外， `chaosfs` 容器应该按照 `的特权` 和 [`挂载`](https://kubernetes.io/docs/concepts/storage/volumes/#mount-propagation) 字段在 `chaosfs` Container运行。 卷积应设置为 `双向`。
 
-`chaosfs` uses `fusermount` to mount the data directory of the application container in `chaosfs` container.
+`chaosfs` 使用 `fusermount` 挂载应用程序容器的数据目录 `chaosfs` 容器。
 
-If any Pod with `Bidirectional` mount propagation to the same volume mounts anything there, the Container with `HostToContainer` mount propagation will see it.
+如果任何带有 `的pod双向` 挂载传播到同一卷上的任何东西。 带有 `HostToContainer 的容器` 挂载传播将看到它。
 
-This mode is equal to `rslave` mount propagation as described in the [Linux kernel documentation](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt).
+此模式等于 [Linux 内核文档](https://www.kernel.org/doc/Documentation/filesystems/sharedsubtree.txt) 中描述的 `rslos` mount propage.
 
-More detail about `Mount propagation` can be found [here](https://kubernetes.io/docs/concepts/storage/volumes/#mount-propagation).
+更多关于 `挂载传播` 的详细信息可以在这里 [](https://kubernetes.io/docs/concepts/storage/volumes/#mount-propagation) 找到。
 
 ```yaml
 containers:
@@ -148,89 +148,89 @@ containers:
         mountPropagation: Bidirectional
 ```
 
-Description of `chaosfs`:
+`chaosfs` 的描述：
 
-- **addr**: defines the address of the grpc server, default value: ":65534".
-- **pidfile**: defines the pid file to record the pid of the `chaosfs` process.
-- **original**: defines the fuse directory. This directory is usually set to the same level directory as the application data directory.
-- **mountpoint**: defines the mountpoint to mount the original directory.
+- **添加**: 定义Grpc 服务器的地址，默认值：“:65534”。
+- **pidfile**: 定义用于记录 `chaosfs 的 pid` 进程的 pid 文件。
+- **原版**: 定义引信目录。 此目录通常设置为与应用程序数据目录相同的级目录。
+- **挂载点**: 定义挂载原始目录的挂载点。
 
-This value should be set to the data directory of the target application.
+此值应设置为目标应用程序的数据目录。
 
 #### `chaos-scripts`
 
-`chaos-scripts` container is used to inject some scripts to the target pods including [wait-fuse.sh](https://github.com/chaos-mesh/chaos-mesh/blob/master/scripts/wait-fuse.sh).
+`chaos-script` 容器用于将一些脚本注入到目标pods，包括 [等待引信.sh](https://github.com/chaos-mesh/chaos-mesh/blob/master/scripts/wait-fuse.sh)
 
-`wait-fuse.sh` is used by application container to ensure that the fuse-daemon server is running normally before the application starts.
+`等待引信.sh` 被应用程序容器使用，以确保应用程序启动前的fuse-daemon 服务器正常运行。
 
-`chaos-scripts` is generally used as an initContainer to do some preparations.
+`chaos-script` 通常被用作一个 initContainer 来做一些制作。
 
-The following config uses `chaos-scripts` container to inject scripts and moves the scripts to `/tmp/scripts` directory using `init.sh`. `/tmp/scripts` is an [emptyDir volume](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) used to share the scripts with all containers of the pod.
+以下配置使用 `chaos-script` 容器注入脚本，并将脚本移动到 `/tmp/脚本` 目录使用 `init.sh` `/tmp/脚本` 是一个 [空卷](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir) 用于与所有容器共享脚本。
 
-So you can use `wait-fuse.sh` script in tikv container to ensure that the fuse-daemon server is running normally before the application starts.
+所以您可以在 tikv 容器中使用 `等候引信.sh` 脚本来确保在应用程序启动前Fuse-daemon 服务器正常运行。
 
-In addition, `init.sh` creates a directory named `fuse-data` in the [PersistentVolumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) directory of the tikv as the original directory for fuse-daemon server and the original directory is required.
+此外， `init. h` 在 [PersistentVolumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) tikv 的目录创建一个名为 `fuse-data` 的目录，作为Fuse-daemon 服务器的原目录和原目录是必需的。
 
-You should also create the original directory in the PersistentVolumes directory of the application.
+您还应该在应用程序的PersistentVolumes目录中创建原始目录。
 
 ```yaml
-initContainers:
-  - name: inject-scripts
+initContainers：
+  - 名称：注入脚本
     image: pingcap/chaos-scripts:latest
-    imagePullpolicy: Always
-    command: ['sh', '-c', '/scripts/init.sh -d /var/lib/tikv/data -f /var/lib/tikv/fuse-data']
+    imagePullpolicy: 总是
+    命令: ['sh', '-c', '/scripts/init.sh -d /var/lib/tikv/data -f /var/lib/tikv/fuse-data']
 ```
 
-The usage of `init.sh`:
+`init.sh` 的用法：
 
 ```bash
-$ ./scripts/init.sh -h
+$./scripts/init.sh -h
 ```
 
-Expected output:
+预期输出：
 
 ```bash
-USAGE: ./scripts/init.sh [-d data directory] [-f fuse directory]
-Used to do some preparation
-OPTIONS:
-   -h                      Show this message
-   -d <data directory>     Data directory of the application
-   -f <fuse directory>     Data directory of the fuse original directory
-   -s <scripts directory>  Scripts directory
-EXAMPLES:
-   init.sh -d /var/lib/tikv/data -f /var/lib/tikv/fuse-data
+USAGE: ./scripts/init. h [-d 数据目录] [-f fuse 目录]
+用于做一些准备
+选项：
+   -h 显示此消息
+   -d <data directory>     应用程序的数据目录
+   -f <fuse directory>     引信原始目录的数据目录
+   -s <scripts directory>  脚本目录
+EXAMPLES：
+   init. h -d /var/lib/tikv/data -f /var/lib/tikv/fuse-data
 ```
 
-### Tips
+### 提示
 
-1. The application Container.volumeMounts used to define data directory should be set to `HostToContainer`.
-2. `scripts` and `fuse` emptyDir should be created and should be mounted to all container of the pod.
-3. The application uses `wait-fuse.sh` script to ensure that the fuse-daemon server is running normally.
+1. 用于定义数据目录的应用程序Container.volumeMounts应该设置为 `HostToContainer`。
+2. `脚本` 和 `引信` 应创建空迪尔，并应挂载到土豆的所有容器。
+3. 应用程序使用 `等候-fuse.sh` 脚本来确保fuse-daemon 服务器正常运行。
 
 ```yaml
-postStart:
-  tikv:
-    command:
+帖子开始：
+  tikv：
+    命令：
       - /tmp/scripts/wait-fuse.sh
 ```
 
-The usage of `wait-fuse.sh`:
+`正在等待。sh`:
 
 ```bash
-$ ./scripts/wait-fuse.sh -h
+$./script/等待fuse.sh -h
 ```
 
-Expected output:
+预期输出：
 
 ```bash
-./scripts/wait-fuse.sh: option requires an argument -- h
-USAGE: ./scripts/wait-fuse.sh [-a <host>] [-p <port>]
-Waiting for fuse server ready
-OPTIONS:
-   -h                   Show this message
-   -f <host>            Set the target file
-   -d <delay>           Set the delay time
-   -r <retry>           Set the retry count
-EXAMPLES:
-   wait-fuse.sh -f /tmp/fuse/pid -d 5 -r 60
+./script/wait-fuse.sh：选项需要参数 -- h
+USAGE：./script/wait-fuse。 h [-a <host>][-p <port>]
+等待引信服务器准备好
+选项：
+   -h 显示此消息
+   -f <host>            设置目标文件
+   -d <delay>           设置延迟时间
+   -r <retry>           设置重试计数
+EXAMPLES：
+   等待安装。 h -f /tmp/fuse/pid -d 5 -r 60
 ```
