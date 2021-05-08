@@ -1,74 +1,74 @@
 ---
-id: podchaos_experiment
-title: PodChaos Experiment
-sidebar_label: PodChaos Experiment
+id: podchaos_experience
+title: PodChaos 测试
+sidebar_label: PodChaos 测试
 ---
 
-This document introduces how to create PodChaos experiments.
+本文档介绍了如何创建 PodChaos 实验。
 
-> **Note:**
+> **注：**
 > 
-> Currently, Chaos Mesh does not support simulation injection of naked pods. And it only supports some specific pods, such as `deployment`, `statefulset`, `daemonset`.
+> 目前，Chaos Mesh不支持喷雾模拟注入。 并且它只支持一些特定的点数，如 `部署`, `statefulset`, `守护进程`。
 
-PodChaos allows you to simulate pod faults, specifically `pod failure` and `pod kill`. `pod failure` can be used to simulate a situation where a pod is down. In this case, the pod is unavailable for a long time.
+PodChaos 允许您模拟诗歌故障，特别是 `pod 故障` and `pod 杀死`。 `pod失败` 可以用来模拟一个马铃薯处于下的情况。 在这种情况下，马铃薯长期无法使用。
 
-- **Pod Failure** action periodically injects errors to pods. And it will cause pod creation failure for a while. In other words, the selected pod will be unavailable in a specified period.
+- **Pod 失败** action 周期性将错误注入到pods。 而且这将在一段时间内导致播客制造失败。 换言之，选中的诗人将在指定的时间段内不可用。
 
-- **Pod Kill** action kills the specified pod (ReplicaSet or something similar might be needed to ensure the pod will be restarted).
+- **Pod 杀死** 操作会杀死指定的pod (ReplicaSet 或可能需要类似的东西以确保pod将重新启动)。
 
-## `pod-failure` configuration file
+## `pod-fail` 配置文件
 
-Below is a sample `pod-failure` configuration file:
+下面是一个示例 `pod-fail` 配置文件：
 
 ```yaml
-apiVersion: chaos-mesh.org/v1alpha1
+apiVersion: chaos-mesh。 rg/v1alpha1
 kind: PodChaos
 metadata:
   name: pod-failure-example
   namespace: chaos-testing
 spec:
-  action: pod-failure
+  action: pod-fail
   mode: one
   value: ''
   duration: '30s'
   selector:
-    labelSelectors:
-      'app.kubernetes.io/component': 'tikv'
+    label Selector:
+      'app. ubernetes.io/component': 'tikv'
   scheduler:
     cron: '@every 2m'
 ```
 
-For more sample files, see [examples](https://github.com/chaos-mesh/chaos-mesh/tree/master/examples). You can edit them as needed.
+欲了解更多样本文件，请参阅 [示例](https://github.com/chaos-mesh/chaos-mesh/tree/master/examples)。 您可以根据需要编辑它们。
 
-Description:
+描述：
 
-- **action** defines the specific chaos action for the pod. In this case, it is pod failure.
-- **mode** defines the mode to run chaos action. Supported mode: `one` / `all` / `fixed` / `fixed-percent` / `random-max-percent`.
-- **value** depends on the value of `mode`. If `mode` is `one` or `all`, leave `value` empty. If `fixed`, provide an integer of pods to do chaos action. If `fixed-percent`, provide a number from 0 to 100 to specify the percent of pods the server can do chaos action. If `random-max-percent`, provide a number from 0 to 100 to specify the max percent of pods to do chaos action.
-- **duration** defines the duration for each chaos experiment. The value of the `duration` field is `30s`, which indicates that pod failure will last 30 seconds.
-- **selector** is used to select pods that are used to inject chaos actions. For more details, see [Define the Scope of Chaos Experiment](experiment_scope.md).
-- **scheduler** defines the scheduler rules for the running time of the chaos experiment. For more rule information, see [robfig/cron](https://godoc.org/github.com/robfig/cron).
+- **操作** 定义了针对pod的特定混乱动作。 在这种情况下，它是失败的。
+- **模式** 定义了运行混乱动作的模式。 支持的模式： `一个` / `所有` / `固定` / `固定百分比` / `随机最大百分比`.
+- **值** 取决于 `模式` 的值。 如果 `模式` `是一个` 或 `所有`, 请将 `值` 留空。 如果 `修复了`，请提供一个进行混乱动作的池子整数。 如果 `固定百分比`, 请提供一个从 0 到 100 之间的数字来指定服务器可以进行混乱操作的pods百分比。 如果 `随机最大值`, 请提供一个从 0 到 100 之间的数字来指定用于进行混乱操作的 pods 的最大百分比。
+- **持续时间** 定义了每次混乱状态实验的持续时间。 `持续时间` 字段的值是 `30s`, 这表明播客失败将持续30秒。
+- **选择器** 用于选择用于注入混乱动作的点。 欲了解更多详情，请参阅 [定义Chaos 实验范围](experiment_scope.md)。
+- **调度器** 定义了混乱状态实验运行时间的调度规则。 欲了解更多规则信息，请参阅 [robfig/cron](https://godoc.org/github.com/robfig/cron)。
 
-## `pod-kill` configuration file
+## `pod-kill` 配置文件
 
-Below is a sample `pod-kill` configuration file:
+下面是一个示例 `pod-kill` 配置文件：
 
 ```yaml
-apiVersion: chaos-mesh.org/v1alpha1
+apiVersion: chaos-mesh。 rg/v1alpha1
 kind: PodChaos
-metadata:
+metdata:
   name: pod-kill-example
   namespace: chaos-testing
 spec:
-  action: pod-kill
+  action: pod-kille
   mode: one
   selector:
-    namespaces:
+    namespace:
       - tidb-cluster-demo
-    labelSelectors:
-      'app.kubernetes.io/component': 'tikv'
+    label Selector:
+      'app. ubernetes.io/component': 'tikv'
   scheduler:
-    cron: '@every 1m'
+    cron: '@ever 1m'
 ```
 
-The detailed description of each field in the configuration template are consistent with that in [`pod-failure`](#pod-failure-configuration-file).
+配置模板中每个字段的详细描述与 [`pod-fail`](#pod-failure-configuration-file) 中的描述一致。
