@@ -1,9 +1,9 @@
 ---
-id: architecture
-title: Architecture
-sidebar_label: Architecture
+id: 结构
+title: 结构
+sidebar_label: 结构
 ---
 
-The architecture of Chaos Mesh is as follows:
+Chaos Mesh的结构如下：
 
 ![chaos-mesh](/img/chaos-mesh.svg)
